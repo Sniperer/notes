@@ -1,3 +1,4 @@
+
 ```c++
 char greating[]="hello";
 char *p=greeting; //non-const pointer,non-const data
@@ -24,7 +25,7 @@ const Rational operator* (const Rational& lhs, const Rational& rhs);
 + 将const实施于成员函数的目的，是为了确认该成员函数可作用于const对象身上。基于两个理由：
   1. 他们使class接口比较容易理解，得知哪个函数可以改动对象内容而哪个函数不行。
   2. 他们使操作const对象称为可能，这对编写高效代码是个关键，改善C++程序效率的一个根本办法是以pass-by-reference-to-const方式传递对象，而此技术可行的前提是，我们有const成员函数可用来处理取得的const对象。
-+ 两个成员函数，如果指示常量与否的不同，是可以被重载的。
++ 两个成员函数，如果只是常量与否的不同，是可以被重载的。
 ```c++
 class TextBlock{
   public:
@@ -77,7 +78,7 @@ std::size_t CTextBlock::length() const{
     return textLength;
 }
 ```
-+ mutable 不能解决所有问题，无论如何做，const函数都要重复一遍non-const函数的功能，真正需要做的是实现operator[]的机能一次并使用两次，也就是说，应该令其中一个调用另一个。着促使我们将常量性转移 casting away constness
++ mutable 不能解决所有问题，无论如何做，const函数都要重复一遍non-const函数的功能，真正需要做的是实现operator[]的机能一次并使用两次，也就是说，应该令其中一个调用另一个。这促使我们将常量性转移 casting away constness
 
 ```c++
 class TextBlock{
@@ -86,7 +87,7 @@ public:
     return text[position];
   }
   char& operator[](std::size_t position){
-    return const_cast<char&>(static_cast<const TextBlock&>(*this\*)[position]);
+    return const_cast<char&>(static_cast<const TextBlock&>(*this)[position]);
   }
 }
 ```
