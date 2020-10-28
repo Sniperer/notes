@@ -1,0 +1,121 @@
+<p>iterators:</p>  <br>
+
+<p>迭代器相应型别：假设算法中有必要声明一个变量，以
+迭代器所指对象的型别为型别如何做？ <br>
+可以利用function template的参数推导机制：
+<pre>
+<code>
+template <class I, class T>
+void func_impl(I iter, T t){
+  T tmp;
+};
+template <class I>
+inline
+void func(I iter){
+  func_impl(iter,*iter);
+}
+int main(){
+  int i;
+  func(&i);
+}
+</code>
+</pre>
+以func为对外接口，内部使用参数推导，可以获得指针所指之物。
+</p>
+
+<p>
+假设我们要声明一个返回值为指针所指之物型别的函数，该如何做？
+可以声明内嵌型别。
+<pre>
+<code>
+template <class T>
+  struct Myiter{
+    typedef T value_type;
+  }
+template <class T>
+typename I::value_type
+func(I ite){
+  return *ite;
+}
+</code>
+</pre>
+但类型参数中的class可能会产生隐晦的陷阱，因为并不是所有迭代器都是class type，原生指针就不是，如果不是class type，就无法为它定义内嵌型别。于是，引入偏特化，例如：
+<pre>
+<code>
+template<typename T>
+class C<T*> {};
+</code>
+</pre>
+偏特化为我们提供了解决迭代器所指之物为原生指针的解决方法：
+<pre><code>
+template iterator_traits {
+  typedef typename I::value_type value_type;
+};
+template <class T>
+struct iterator_traits<T*>{
+  typedef T value_type;
+};
+template <class I>
+typename iterator_traits<I>::value_type
+func(I ite){
+  return *ite;
+}
+</code></pre>
+如果我们遇到一个指向常量的指针，使用上述的偏特化版本，会产生一个无法修改的变量类型，因为参数推导来源自const T，为解决这一问题，可以再为const T*特化一个版本：
+<pre><code>
+template <class T>
+struct iterator_traits<const T*>{
+  typedef T value_type;
+};
+
+</code></pre>
+</p>
+
+<img src="2.png" width="1650" height="3000" />
+
+<p>根据经验，最常用到的迭代器相应型别有五种：value type,difference type,pointer,reference,iterator catagoly</p>
+
+<p>value type:迭代器所指对象的型别。</p>
+
+<p>difference type:用来表示两个迭代器之间的距离，如果一个算法提供计数功能，其传回值就必须使用迭代器的difference type。
+<pre>
+    <code>
+template <class I,class T>
+typename iterator_traits<I>::difference_type
+count(I first, I last, const T& value){
+  typename iterator_traits<I>::difference_type n=0;
+  for(;first!=last;++first)
+    if(*first==value)
+      ++n;
+  return n;
+}
+    </code>
+</pre>
+针对相应型别，traits针对原生指针的特化版本使用ptrdiff_t。
+</p>
+
+<p>reference type & pointer type:</p>
+<pre><code>
+template <class I>
+struct iterator_traits{
+  typedef typename I::pointer pointer;
+  typedef typename I::reference reference;
+};
+
+template <class T>
+struct iterator_traits<T*> {
+  typedef T* pointer;
+  typedef T& reference;
+};
+
+template <class T>
+struct iterator_traits<const T*>{
+  typedef const T* pointer;
+  typedef const T& reference;
+};
+</code></pre>
+
+<p>iterator_category: <br>
+在设计算法时，如果可能我们针对某种迭代器提供一个明确定义，并针对更强化的某种迭代器提供另一种定义，才能在不同情况下提供最大的效率，因此我们设计在编译器就能够根据迭代器选择正确的版本，自然的我们可以利用函数重载机制，为迭代器额外增加一个参数。如
+<code>__advance(i,n,iterator_traits<InputIterator>::iterator_category());</code>注意这后面的括号，相当于声明了一个临时变量，写的实在是漂亮！！！并且五类迭代器之间具有继承关系，那么可以省略单纯只做传递调用的函数。因为函数重载可以匹配基类的类型。
+</p>
