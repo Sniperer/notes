@@ -1,0 +1,27 @@
+%!TEX root=../main.tex
+\ifx\allfiles\undefined
+  \documentclass{article}
+  \usepackage[a4paper,centering,scale=0.8]{geometry}
+  \input{../lib/macro.tex}
+  \begin{document}
+\else
+\fi
+
+Originally, it was designed to handle mixed linear programming. Amazing!
+\subsection{Mixed-integer Zero-one Programming}
+Consider a linear mixed-integer zero-one programming problem whose feasible region is given as follows:
+\begin{equation}
+  \begin{align}
+    X = \{(x,y): &\sum_{j=1}^n \alpha_{rj}x_j + \sum_{k=1}^m \gamma_{rk}y_k \geq \beta_r ,\forall r \in [R],\\ &x_j \in \{0,1\} ,\forall j \in [n], \\ &0\leq y_k \leq 1, \forall k \in [m] \}
+  \end{align}
+\end{equation}
+
+One classical approach involves relaxing the integrality constraint by simply treating the variables as continuous real values rather than integers, thereby allowing for an optimal but potentially infeasible solution. The Sherali-Adams reformulation-linearization is another approach.
+
+
+
+
+\ifx\allfiles\undefined
+  \end{document}
+\else
+\fi
