@@ -1,0 +1,33 @@
+%!TEX root=../main.tex
+\ifx\allfiles\undefined
+  \documentclass{article}
+  \usepackage[a4paper,centering,scale=0.8]{geometry}
+  \input{../lib/macro.tex}
+  \input{../lib/cc.tex}
+  \begin{document}
+\else
+\fi
+
+\subsubsection{Function problem}
+\begin{Define}
+\begin{define}
+ A functional problem $\boldsymbol{P}$ is defined by a relation R over strings of an arbitrary alphabet $\Sigma:$ $\boldsymbol{R} \subseteq \Sigma^* \times \Sigma^*.$
+\end{define}
+\end{Define}
+
+An algorithm solves $\boldsymbol{P}$ if for every input $x$ such that there exists a $y$ satisfying $(x,y) \in \boldsymbol{R},$ the algorithm produces one such $y,$ and if there are no such $y$, it rejects. The output for function problems is more complex than that of a decision problem, which means it's not simply 'yes' or 'no'.
+
+\begin{enumerate}
+\item \fp/: the set of binary relations for which there is a polynomial time algorithm that, given $x$, finds some $y$ for which $R(x,y)$ holds.
+\item \fnp/: the set of binary relations for which there is a polynomial time algorithm that can determine whether $R(x,y)$ holds given both $x$ and $y.$
+\item \tfnp/: a subset of \fnp/ for which are total relation.
+\end{enumerate}
+
+\subsubsection{Black-Box model}
+
+
+
+\ifx\allfiles\undefined
+  \end{document}
+\else
+\fi

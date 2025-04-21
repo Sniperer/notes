@@ -1,0 +1,22 @@
+%!TEX root=../main.tex
+\ifx\allfiles\undefined
+  \documentclass{article}
+  \usepackage[a4paper,centering,scale=0.8]{geometry}
+  \input{../lib/macro.tex}
+  \input{../lib/cc.tex}
+  \begin{document}
+\else
+\fi
+
+\begin{Define}
+  \begin{define}
+    If $f_1: \Sigma_1^* \rightarrow L$ and $f_2: \Sigma_2^* \rightarrow L$ are proof systems for $L$, then $f_2$ p-simulates $f_1$ provided there is a function $g:\Sigma_1^* \rightarrow \Sigma_2^*$ such that $f_2(g(x)) = f_1(x)$ for all $x.$
+  \end{define}
+\end{Define}
+
+It's easy to show that p-simulation is a transitive reflexive relation, so that its symmetric closure is an equivalence relation. If we require the function $g$ is bounded in length by a polynomial in the length of its argument and a proof system $f_2$ for $L$ p-simulates a polynomially bounded proof system $f_1$ for $L$, then $f_2$ is also polynomially bounded.
+
+\ifx\allfiles\undefined
+  \end{document}
+\else
+\fi

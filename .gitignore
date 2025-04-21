@@ -1,0 +1,31 @@
+# LaTeX intermediate and output files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.run.xml
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*~
+.#*
+
+# PDF output (optional, if you don't want to track PDFs)
+*.pdf
+
+# Editors
+.vscode/
+*.swp
+
