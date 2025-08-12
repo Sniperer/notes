@@ -1,3 +1,6 @@
+#Unpublished Directory
+Graph/
+
 # LaTeX intermediate and output files
 *.aux
 *.bbl
@@ -23,7 +26,7 @@
 .#*
 
 # PDF output (optional, if you don't want to track PDFs)
-*.pdf
+#*.pdf
 
 # Editors
 .vscode/
