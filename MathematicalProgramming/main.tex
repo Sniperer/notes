@@ -1,0 +1,475 @@
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,centering,scale=0.8]{geometry}
+\usepackage[affil-it]{authblk}
+
+%------------------ImportEnv---------------
+\input{../share/macro.tex}
+% -----------------ComplexityClass---------
+\input{../share/cc.tex}
+\def\allfiles{}
+\begin{document}
+\title{Notes about Mathematical Programming}
+\author{Xinhao Nie}
+\affil{Aarhus University}
+\maketitle
+
+\section{Linear Programming}
+
+There are two different definitions about
+standard form of linear programming. One is
+\begin{align*}
+  \text{maximize} \quad & c^\top \xx \\
+  \text{subject to} \quad & A\xx \leq b \\
+                        & \xx \geq 0,
+\end{align*}
+while another one is:
+\begin{Define}[Primal Problem]
+    \normalfont
+\begin{align*}
+  \text{minimize} \quad & c^\top \xx \\
+  \text{subject to} \quad & A\xx = b \\
+                        & \xx \geq 0.
+\end{align*}
+\end{Define}
+Obviously, they are euqal. Actually, it doesn't
+really matter whether an LP is formulated as a
+minimization or maximization problem. However,
+whether the constraints are written with $\geq$
+or $=$ does affect the way the problem is
+understood.
+
+When we are trying to use simplex method, the
+first one is more suitable because we can
+easily import slack varibles and do pivot
+rule. Things go complicated when we try to
+prove strong duality theorem as what we will
+show next.
+
+\subsection{Duality}
+
+According to minimization or maximization
+in prime problem, we can give corresponding
+dual problem as follows:
+
+\begin{Define}[Dual Problem]
+    \normalfont
+\begin{align*}
+  \text{maximize} \quad & b^\top \yy \\
+  \text{subject to} \quad & A^\top \yy \leq c.
+\end{align*}
+\end{Define}
+
+\subsubsection{Weak Duality Theorem}
+
+Many people view it as one of the most
+remarkable and useful features of linear
+programming because of the relation between
+optimal value in prime problem and that in
+dual problem.
+
+\begin{Theorem}[Weak Duality]
+    The optimal value in corresponding dual
+    problem is
+    always less than the optimal value in
+    prime problem.
+\end{Theorem}
+
+\begin{Proof}
+  \begin{align*}
+      \forall \yy,\xx. b^\top \yy =
+      (A\xx)^\top \yy
+      =\xx^\top A^\top \yy \leq \xx^\top c =
+      c^\top \xx.
+  \end{align*}
+\end{Proof}
+
+\subsubsection{Strong Duality Theorem}
+
+The proof of Strong Duality Theorem depends on the standard form LP, thus, it vaies from different definitions. The following proof is based on our definition. To this end, we need soem useful lemmas in discrete optimization.
+
+\begin{Lemma}[Farkas' Lemma]
+  \label{FarkasLemma}
+  Let $A \in \mathbb{R}^{m \times n}$ be a matrix and $b \in \mathbb{R}^m$ be a vector. The system $Ax = b, x \geq 0$ has a solution if and only if for all $\lambda \in \mathbb{R}^m$ with $\lambda^\top A \geq 0$ one has $\lambda^\top b \geq 0$.
+
+  \normalfont  \Nie{There are a number of slightly different formulations of the lemma in the literature. Notice that the original one is exactly one of the above two assertion is true. Intuitively \eqref{FarkasLemma} is weaker, however, $\lambda = 0$ is always a trivial solution of $\lambda^\top A \geq 0$. Thus, they are equivalent. }
+\end{Lemma}
+
+\begin{Proof}
+  \TL{It's a special variant of Separation Theorem. As a result in geometry, I believe it's straightforward but hard to prove. TODO.}
+\end{Proof}
+
+An interesting and easy variant of Farkas' lemma is either $Ax = b$ has a solution $x \in \RR^n$, or $A^\top y = 0$ has a solution $y \in \RR^m$ with $b^\top y \neq 0$. The proof is quite simple. If $Ax = b$ has a solution, $\rank{A} = \rank{[A|b]}$. Thus $b$ is a linear combination of $A$. Then there exists some non-trivial numbers $\lambda_1, \lambda_2,..., \lambda_n$ s.t. $\forall i \in [m]. b_i = \lambda_1 A_{i,1} + \lambda_2 A_{i,2} + \dots + \lambda_n A_{i,n}$. If there exists $y$ s.t. $\forall j\in [n], y_1A_{1,j} + y_2A_{2,j} + \dots + y_mA_{m,j} = 0$, we have $\sum_{i \in [m]} y_ib_i = \sum_{i \in [m]} \sum_{j \in [n]} \lambda_jy_iA_{i,j} = \sum_{j \in [n]} \lambda_j \sum_{i \in [m]} y_iA_{i,j} = 0$. Conversely, suppose there is a solution $x^*$. $0 = y^\top A = y^\top Ax^* = y^\top b \neq 0$ leads to a contradiction. It's named as \emph{Fredholm alternative}.
+
+
+\begin{Lemma}[Second Variant of Farkas' Lemma]
+  Let $A \in \RR^{m\times n}$ and $b \in \RR^m$. The system $Ax \leq b$ has a solution if and only if for all $\lambda \in \RR^m \geq 0$ with $\lambda^\top A = 0$ one has $\lambda^\top b \geq 0$.
+\end{Lemma}
+\begin{Proof}
+  $\Rightarrow$: If there is a feasible $x^*$ s.t. $Ax^* \leq b$, we have $\forall \lambda \geq 0. \lambda^\top Ax \leq \lambda^\top b$. It implies $\lambda^\top b \geq 0$.
+  
+  $\Leftarrow$: Firstly, $Ax^+ - Ax^- + z = b, x^+,x^-,z \geq 0$ has a solution if and only if $Ax \leq b$ has a solution. We change it to matrix form as $[A|-A|I_m]X=b, X \geq 0$. Using Farkas' Lemma \eqref{FarkasLemma}, we have it has a solution if and only if $\forall \lambda \in \RR^m$ with $\lambda[A|-A|I_m] \geq 0$ one has $\lambda^\top b \geq 0$. It's equivalent to $\lambda A = 0$ and $\lambda \geq 0$.
+\end{Proof}
+
+\begin{Theorem}
+  If both prime problem and dual problem are feasible, then they have same optimal value.
+\end{Theorem}
+
+Suppose there are $\xx^*$ and $\yy^*$ which are optimal varibales in each problem. $A\xx^* = b$ and $\xx^* \geq 0$ hold. Let's consider the solution space of $A \xx^* = b.$ If $A$ is full-rank, $\xx^* = A^{-1}b$ is a unique solution because $\xx^*$ is a solution. In this case, the optimal value of prime problem is $c^\top A^{-1} b$. Let $\yy' = (A^{-1})^\top c.$ We can verify that $b^\top\yy' = c^\top A^{-1} b$ and $A^\top y = A^\top (A^{-1})^\top c \leq c.$ Together with Weak Duality Theorem, there is no gap between two optimal values.
+
+  Now, we consider the case that $A$ is not full-rank. Actually, it could be proved using simplex method. The result of choosing basic variables and non-basic variables is consist of a full-rank submatrix. Using a similar analysis as above, we can conclude it. But it depends on the relation between dual variables and prime variables which also relates to the definition.  Here we can give a more mathematical proof using Farkas' Lemma.
+
+\begin{Proof}
+  Suppose the maximal value of dual problem is
+  $\delta$. There is no feasible solution in
+  $b^\top y \geq \delta + \epsilon, A^\top y
+  \leq c$. Change it into
+  $\begin{bmatrix} -b^\top \\ A^\top
+   \end{bmatrix} y \leq
+   \begin{bmatrix} - \delta - \epsilon \\
+     c \end{bmatrix}$.
+   Using the second variant of Farkas' lemma
+   in the new problem, we know that there
+   exists $\lambda \in \RR^{m+1} \geq 0$ with
+   $\lambda^\top
+   \begin{bmatrix} -b^\top \\
+     A^\top
+   \end{bmatrix} = 0$ one has
+   $\lambda^\top
+   \begin{bmatrix} - \delta - \epsilon \\
+     c \end{bmatrix} < 0$.
+   Be carefully here! Generally the negation
+   of $\geq$ is not $<$ because it's
+   compenant-wise operation. But here it's
+   just one number.
+
+   Suppose $\lambda =
+   \begin{bmatrix} \lambda_1 \\ \lambda'
+   \end{bmatrix}$. We can show that
+   $\lambda_1 \geq 0$. Using the second
+   variant of Farkas' lemma in original dual
+   problem, we have for all $\lambda' \geq 0$
+   with $\lambda'^\top A^\top = 0$ one has
+   $\lambda^\top c \geq 0$. If
+   $\lambda_1 = 0$, it conflicts with previous
+   result. Furthermode, by scaling, we can
+   assume $\lambda_1 = 1$. One has
+   $\lambda'^\top A^\top = b^\top$ and
+   $\lambda' c < \delta + \epsilon$. Here
+   $\lambda'$ is a valid variable for primal
+   problem with objective value less than
+   $\delta + \epsilon$. Together with weak
+   duality theorem, we get a infimum.
+  
+\end{Proof}
+
+\subsubsection{Complementary Slackness}
+
+\begin{Theorem}
+  As a conclusion of strong and weak duality
+  theorem, we have
+  $\forall i \in [n]. x_i^*(c - A^\top \yy^*)_i
+  = 0$.
+\end{Theorem}
+
+\begin{Proof}
+  $b^\top \yy^* = c^\top \xx^*
+  \geq \yy^{*\top} A \xx^*
+  = \yy^{*\top} b = b^\top \yy^*$. Thus,
+  $\forall i \in [n]. x_i^*(c - A^\top \yy^*)_i
+  = 0$ must hold.
+\end{Proof}
+
+\section{Semidefinite Programming}
+
+\subsection{Preliminary}
+
+\subsubsection{Bilinear Form}
+
+In mathematics, a bilinear form is a bilinear
+map $V \times V \rightarrow K$ on a vector
+space $V$ over a field $K$. In this chapter,
+we restrict it's on real number field.
+
+\begin{Define}
+  A bilinear form $f: V \times V \rightarrow
+  \RR$ is a map such that:
+  \begin{itemize}
+  \item $f(\alpha \uu + \beta \vv, \ww) =
+    \alpha f(\uu, \ww) + \beta f(\vv, \ww)$
+  \item $f(\ww, \alpha \uu + \beta \vv) =
+    \alpha f(\ww, \uu) + \beta f(\ww, \vv)$,
+  \end{itemize}
+  where $\vv, \uu, \ww \in V$ and
+  $\alpha, \beta \in \RR$.
+\end{Define}
+
+Once we selected the basis of vector space
+$V = \langle \ee_1, \ee_2, \dots, \ee_n
+\rangle$, the bilinear form $f$ can be
+represented by a $n \times n$ matrix since the
+bilinear property.
+$$
+f(\xx, \yy) =
+f(\sum_i x_i \ee_i, \sum_j y_j \ee_j) =
+\sum_i x_if(\ee_i, \sum_j y_j \ee_j) =
+\sum_i \sum_j x_iy_j f(\ee_i, \ee_j) =
+\sum_{i,j} x_iy_jf_{ij}.
+$$
+Thus, we can rewrite $f(\xx,\yy)$ as $\xx^\top
+F \yy$. Moreover, given the change-of-basis
+matrix, we can calculate corresponding matrix
+$F$. Suppose the change-of-basis matrix is
+$A = (a_{ij}):
+\forall j \in [n].
+\ee'_j = \sum_{i=1}^n a_{ij}\ee_i$.
+We have $\xx = A \xx'$.\Nie{Be careful,
+  it's a little bit confusing.} Then,
+\begin{align*}
+  \xx'^\top F' \yy' = f'(\xx', \yy') =
+  f(\xx,\yy) = \xx^\top F \yy =
+  (A \xx')^\top F (A \yy') =
+  \xx'^\top A^\top F A \yy'.
+\end{align*}
+Finally, we get the relation $F' = A^\top F A$.
+We call it as \emph{congruence}. One can
+observe that $\rank{F} = \rank{F'}$ by the
+rank inequility, namely $\rank{AB} \leq
+\min\{\rank{A}, \rank{B}\}$, and $A$ is
+full-rank. As analyzed above, the rank is the
+first invariant we have observed that is
+independent of the choice of basis. Next, we
+present another invariant that is also
+independent of the choice of basis:
+symmetry/skew-symmetry.
+
+Since $f(\xx, \yy) = \epsilon f(\yy, \xx)$ and
+$\epsilon = \pm 1$, we have
+$$
+\xx^\top F \yy = f(\xx, \yy) =
+\epsilon f(\yy,\xx) = \epsilon f^\top(\yy,\xx)
+= \epsilon \xx^\top F^\top \yy.
+$$
+In other words, $F = \epsilon F^\top$.
+Following from congruence, $F' = A^\top F A
+= \epsilon A^\top F^\top A = \epsilon F'^\top$.
+
+If $\charac{\RR} \neq 2$, the space of
+bilinear forms is the direct sum of symmetric
+subspace and skew-symmetric subspace. The
+proof follows directly from a simple fact
+$f(\xx, \yy) =
+\frac{1}{2}(f(\xx, \yy) + f(\yy, \xx)) +
+\frac{1}{2}(f(\xx, \yy) - f(\yy, \xx))$.
+
+\subsubsection{Quadratic Form}
+
+\begin{Define}
+  $q: V \rightarrow \RR$ is a quadratic form,
+  if it meets two conditions:
+  \begin{enumerate}
+  \item $q(\vv) = q(- \vv),
+    \forall \vv \in V$
+  \item $f(\xx, \yy) =
+    \frac{1}{2}(q(\xx + \yy) - q(\xx) -
+    q(\yy))$ is a symmetric bilinear form.
+  \end{enumerate}
+  Additionally, define $\rank{q} = \rank{f}$.
+\end{Define}
+
+One can get the quadratic form from the
+corresponding bilinear form and vice versa.
+Notice that
+$$
+f(\xx, -\xx) =
+\frac{1}{2}(q(\xx - \xx) - q(\xx) - q(-\xx))
+= \frac{1}{2}q(0) - q(\xx),
+$$
+
+$$
+f(\xx, \xx) = -f(\xx, -\xx)
+= q(\xx) - \frac{1}{2}q(0).
+$$
+Meanwhile, $f(0,0) = \frac{1}{2}q(0) = 0$.
+We have $q(\xx) = f(\xx, \xx) =
+\xx^\top F \xx = \sum_{i,j}f_{ij}x_ix_j$.
+
+\begin{Define}[Canonical Form]
+  For a quadratic form $q$, select some basis
+  $\langle \ee_1, \ee_2, \dots, \ee_n \rangle$
+  such that $\forall \xx =
+  \sum_{i=1}^n x_i\ee_i \in V$ one has
+  $q(\xx) = \sum_{i=1}^n f_{ii}x_i^2$. Then,
+  it's the \emph{canonical form} of $q$ under
+  the canonical basis $\langle \ee_1, \ee_2,
+  \dots, \ee_n \rangle$.
+\end{Define}
+
+\begin{Theorem}
+  For all symmetric bilinear form $f$ or just
+  a symmetric matrix $F$, there is a canonical
+  basis.
+\end{Theorem}
+
+\begin{Proof}
+  Prove it by induction! When the dimension is
+  1, it's obvious. Assume the Theorem holds
+  if the dimension less than $n$. Now,
+  if $f = 0$, it's also obvious because it's
+  diagonal form under every basis. If
+  $f \neq 0$, there must be some vector $\ee_1$
+  such that $q(\ee_1) \neq 0$, otherwise for
+  all $\xx, \yy, f(\xx, \yy) = 0$ based on
+  definition. $f(\ee_1, \ee_1) = q(\ee_1)
+  \neq 0$.
+
+  Consider the linear function $f_1: \xx
+  \rightarrow f(\xx, \ee_1)$. We know
+  $\dim \ker f_1 = n - 1$ because it's linear
+  function. Restrict $f$ on $\ker f_1$. Using
+  the assumption, we have a canonical basis
+  $\langle \ee_2, \dots, \ee_n \rangle$.
+  Because they span the kernel space,
+  $f(\ee_i , \ee_1) = 0, \forall i \neq 1$.
+  Thus, $f(\ee_i, \ee_j) = 0, \forall i\neq j$.
+  \Nie{For non-symmetric matrix, we cannot
+  conclude the last statement.}
+  
+  Finally, we should verify they are linearly
+  independent. By contradiction, $\ee_1$ is
+  linear combination of $\ee_2, \dots, \ee_n$,
+  however, $f$ is bilinear which means
+  $f(\ee_1, \ee_1) = 0$.
+\end{Proof}
+
+Based on above theorems, we can calculate the
+quadratic form under the canonical basis,
+namely $q(\xx) = \lambda_1 x_1^2 + \dots +
+\lambda_n x_n^2$. Unfortunately, $\lambda_i$ is
+not an invariant independent of the choice of
+basis vectors. For example, we swap the $\ee_1$
+and $\ee_2$ and $\lambda_1' = \lambda_2,
+\lambda_2' = \lambda_1$. For another example,
+if $\RR$ is real number field, we can scale the basis $\sqrt{\lambda_i}\ee_i$
+if $\lambda_i \geq 0$ and $\sqrt{-\lambda_i}
+\ee_i$ if $\lambda_i < 0$. In this case,
+$q(\xx) = x_1^2 + \dots + x_s^2 - x_{s+1}^2 - \dots -
+x_{r}^2$ where $r$ is the rank of $f$ and a
+basis-independent invariant. Naturally, we are
+wondering $s$ is an invariant or not.
+
+\begin{Theorem}[Sylvester's Law of Inertia]
+  As above, $s$ is a basis-independent
+  invariant.
+\end{Theorem}
+
+\begin{Proof}
+  Suppose $q(\xx) = (x_1')^2 + \dots + (x_t')^2
+  - (x_{t+1}')^2 - \dots - (x_r')^2$ under some
+  basis s.t. $t \neq s$. Without loss of
+  generality, we suppose $t < s$. Consider two
+  space $L_s = \langle \ee_1, \dots, \ee_s
+  \rangle$ and $L_t = \langle \ee_{t+1}',
+  \dots, \ee_{n}' \rangle$. We claim $L_s \cap
+  L_t \neq 0$ because $\dim{L_s \cap L_t} =
+  \dim{L_s} + \dim{L_t} - \dim{\{ L_s + L_t \}}
+  \geq s + n - t - n > 0$. There exists a
+  $\xx = \sum_{i=1}^s x_i \ee_i =
+  \sum_{j = t+1}^n x_j' \ee_j' \neq 0$.
+  Then $q(\xx)= q(\sum_{i=1}^s x_i \ee_i) > 0$
+  and $q(\xx) = q(\sum_{j = t+1}^n x_j' \ee_j')
+  \leq 0$ lead to a contradiction.
+\end{Proof}
+
+\begin{Define}
+  A non-degenerate quadratic form \( q: V \to \mathbb{R} \) is called \textbf{positive definite} (or \textbf{negative definite}) if
+\[
+q(x) > 0 \quad (\text{or } q(x) < 0)
+\]
+for all nonzero vectors \( x \ne 0 \).
+
+The quadratic form \( q \) is called \textbf{positive semidefinite} (or \textbf{negative semidefinite}) if
+\[
+q(x) \ge 0
+\]
+for all \( x \in V \).
+
+Finally, the quadratic form \( q \) is called \textbf{indefinite} if it takes both positive and negative values.
+\end{Define}
+
+\begin{Theorem}
+  The quadratic form $q$ corresponds to a
+  symmetric bilinear form $f$ and a symmetric
+  matrix $F$. Equivalently, $q$ is positive
+  semidefine if the eigenvalue
+  $\lambda_i(F)$ satisfy $\forall i \in [n],
+  \lambda_i(F) \geq 0$ and is positive
+  semidefine if the eigenvalue $\lambda_i(F)$
+  satisfy $\forall i \in [n], \lambda_i(F) >0$.
+\end{Theorem}
+
+Thanks to my Linear Algebra contextbook.
+\begin{Proof}
+  First of all, we know the symmetric bilinear
+  form is diagonalizable. According to
+  theorem~\ref{thm:Diagonal}, it implies two
+  facts. One is that all eigenvalues are real
+  number and it's valid to compare to zero.
+  The other is that all eigenvectors can span
+  the whole space.
+
+  In other words, for all $\xx \in V$, there
+  exists a $\lambda$ s.t. $F\xx = \lambda\xx$.
+  Then $q(\xx) = \xx^\top F \xx =
+  \lambda \xx^\top \xx$, which means $q(\xx)
+  \geq 0$ if and only if $\lambda \geq 0$.
+  Together with the second fact, $\forall \xx.
+  q(\xx) \geq 0$ if and only if $\forall i \in
+  [n]. \lambda_i \geq 0$.
+\end{Proof}
+
+\subsubsection{Eigenvector and Eigenvalue}
+
+\begin{Theorem}
+  The sum of eigenvectors is direct sum.
+\end{Theorem}
+
+\begin{Theorem}[Diagonalizable]
+  \label{thm:Diagonal}
+  Suppose \( A \) is a linear operator on a finite-dimensional vector space \( V \) over the field \( \RR \).  
+A necessary and sufficient condition for \( A \) to be diagonalizable is that the following two conditions are satisfied:
+
+\begin{enumerate}
+    \item All roots of the characteristic polynomial \( \chi_A(t) \) are in \( \RR \);
+    \item The geometric multiplicity of each eigenvalue \( \lambda \) equals its algebraic multiplicity.
+\end{enumerate}
+\end{Theorem}
+
+
+
+\subsection{SDP Formulation}
+\subsubsection{Spectrahedron}
+
+\begin{Define}[LMI]
+  A linear matrix inequality (LMI) has the
+  form
+  \[
+    A_0 + \sum_{i=1}^m A_ix_i \succeq 0,
+  \]
+  where $A_i \in \mathcal{S}^n$ are given
+  symmetric matrices.
+\end{Define}
+
+\begin{Define}[Spectrahedron]
+  A set $S \subset \RR^m$ is a spectrahedron if
+  it has the form
+  \[
+    S = \{(x_1,\dots,x_m) \in \RR^m :
+    A_0 + \sum_{i=1}^m A_ix_i \succeq 0\},
+  \]
+  for some given symmetric matrices $A_i \in
+  \mathcal{S}^n$.
+\end{Define}
+
+
+\end{document}
