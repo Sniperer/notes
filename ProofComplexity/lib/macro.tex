@@ -1,0 +1,92 @@
+\usepackage{newtxtext}
+\usepackage{lipsum} % 该宏包是通过 \lipsum 命令生成一段本文，正式使用时不需要引用该宏包
+\usepackage[dvipsnames,svgnames]{xcolor}
+\usepackage[strict]{changepage} % 提供一个 adjustwidth 环境
+\usepackage{framed} % 实现方框效果
+\usepackage{tcolorbox}
+
+% ------------------------------------------
+\usepackage{amsfonts}
+\usepackage{hyperref}
+% -----------------------------------------
+\usepackage{amsmath}
+\usepackage{amsthm}
+\newtheorem{define}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+% -----------------------------------------
+
+\tcbuselibrary{most}
+% environment derived from framed.sty: see leftbar environment definition
+\definecolor{greenshade}{rgb}{0.90,0.99,0.91} % 文本框颜色
+\definecolor{redshade}{rgb}{1.00,0.90,0.90}
+\definecolor{yellowshade}{rgb}{0.90,0.90,1.0}
+% ------------------******-------------------
+% 注意行末需要把空格注释掉，不然画出来的方框会有空白竖线
+\newenvironment{Define}{%
+\def\FrameCommand{%
+\hspace{1pt}%
+{\color{LightCoral}\vrule width 2pt}%
+{\color{redshade}\vrule width 4pt}%
+\colorbox{redshade}%
+}%
+\MakeFramed{\advance\hsize-\width\FrameRestore}%
+\noindent\hspace{-4.55pt}% disable indenting first paragraph
+\begin{adjustwidth}{}{7pt}%
+\vspace{2pt}\vspace{2pt}%
+}
+{%
+\vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+% ------------------******-------------------
+\newenvironment{Proof}{%
+\def\FrameCommand{%
+\hspace{1pt}%
+{\color{Green}\vrule width 2pt}%
+{\color{greenshade}\vrule width 4pt}%
+\colorbox{greenshade}%
+}%
+\MakeFramed{\advance\hsize-\width\FrameRestore}%
+\noindent\hspace{-4.55pt}% disable indenting first paragraph
+\begin{adjustwidth}{}{7pt}%
+\vspace{2pt}\vspace{2pt}%
+}
+{%
+\vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+% ------------------******-------------------
+\newenvironment{Theorem}{%
+\def\FrameCommand{%
+\hspace{1pt}%
+{\color{BlueViolet}\vrule width 2pt}%
+{\color{yellowshade}\vrule width 4pt}%
+\colorbox{yellowshade}%
+}%
+\MakeFramed{\advance\hsize-\width\FrameRestore}%
+\noindent\hspace{-4.55pt}% disable indenting first paragraph
+\begin{adjustwidth}{}{7pt}%
+\vspace{2pt}\vspace{2pt}%
+}
+{%
+\vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+% ------------------******-------------------
+\newtcolorbox{marker}[1][]{
+  enhanced,
+  before skip=2mm,after skip=3mm,
+  boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
+  colback=yellow!50,
+  colframe=yellow!20!black,
+  sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
+  underlay={%
+    \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+    \path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+    \path[fill=yellow!50!black,draw=none] (interior.south west) rectangle node[white]{\Huge\bfseries !} ([xshift=4mm]interior.north west);
+  },
+  drop fuzzy shadow,#1
+}
+
+% -------------------------------------------
+\newcommand{\authnote}[2]{[{\color{red}\textbf{#1:}}~{\color{blue} #2}]}
+\newcommand{\Nie}[1]{\authnote{Xinhao Nie}{#1}}
+\newcommand{\TBD}[1]{\authnote{TBD}{#1}}
+\newcommand{\TL}[1]{\authnote{ToLearn}{#1}}
