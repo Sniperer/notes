@@ -431,13 +431,54 @@ Thanks to my Linear Algebra contextbook.
 \subsubsection{Eigenvector and Eigenvalue}
 
 \begin{Theorem}
-  The sum of eigenvectors is direct sum.
+  Eigenvectors corresponding to different
+  eigenvalues must be linearly independent.
+  The sum of eigenvectors, namely
+  $\sum_{\lambda_i \in \Spec{\opA}} V^\lambda$ is
+  direct sum.
+  Generally, it's not the original space.
 \end{Theorem}
+
+\begin{Proof}
+  Prove it by induction. Suppoe we select
+  $m$ different eigenvalues.
+  If $m=1$, it holds.
+  Assume our statement holds for each $m < n$.
+
+  If it is not true when $m = n$, then select
+  some linearly dependent vectors $\ee_1,\dots,
+  \ee_m$. We have,
+  $$
+  \alpha_1 \ee_1 + \dots + \alpha_m \ee_m=0,
+  $$
+  where $\alpha_i$ is non-trivial.
+
+  Apple the operator $\opA$ to both sides of
+  the equation. We have
+  $$
+  \lambda_1 \alpha_1 \ee_1 + \dots + \lambda_m
+  \alpha_m \ee_m = 0.
+  $$
+
+  Subtract them:
+
+  $$
+  (\lambda_1 - \lambda_m)\alpha_1 \ee_1 +
+  (\lambda_2 - \lambda_m)\alpha_2 \ee_2 + \dots
+  + (\lambda_{m-1} - \lambda_m)\alpha_{m-1}
+  \ee_{m-1} = 0.
+  $$
+  It leads to a contradiction that if we
+  select $m-1$ different eigenvalues, they are
+  linearly dependent.
+\end{Proof}
+
 
 \begin{Theorem}[Diagonalizable]
   \label{thm:Diagonal}
   Suppose \( A \) is a linear operator on a finite-dimensional vector space \( V \) over the field \( \RR \).  
-A necessary and sufficient condition for \( A \) to be diagonalizable is that the following two conditions are satisfied:
+  A necessary and sufficient condition for \(
+  \opA \) to be diagonalizable is that the following two conditions are satisfied:
 
 \begin{enumerate}
     \item All roots of the characteristic polynomial \( \chi_A(t) \) are in \( \RR \);
@@ -445,6 +486,24 @@ A necessary and sufficient condition for \( A \) to be diagonalizable is that th
 \end{enumerate}
 \end{Theorem}
 
+\begin{Proof}
+  $\Rightarrow:$ Suppose two conditions hold.
+  Let $\lambda_1, \dots, \lambd_m$ are the
+  roots of the characteristic polynomial
+  $\chi_A(t)$, while $k_1, \dots, k_m$ are
+  their multiplicity. We know $\dim{
+    V^{\lambda_1} + \dots + V^{\lambda_m}} =
+  \dim{V^{\lambda_1}} + \dots +
+  \dim{V^{\lambda_m}}$, therefore, $V =
+  V^{\lambda_1} \oplus \dots\oplus V^{\lambda_m}$.
+  All the basis of $V^{\lambda_1}, \dots,
+  V^{\lambda_m}$ consists the basis of $V$.
+  It's obvious that $\opA$ is diagonal under
+  such basis.
+
+  $\Leftarrow:$ I omit details because it's
+  more straightforward.  
+\end{Proof}
 
 
 \subsection{SDP Formulation}
@@ -470,6 +529,35 @@ A necessary and sufficient condition for \( A \) to be diagonalizable is that th
   for some given symmetric matrices $A_i \in
   \mathcal{S}^n$.
 \end{Define}
+
+\subsubsection{Primal SDP Formulation}
+\begin{Define}
+  \normalfont
+  An SDP problem in standard primal form is written as
+  \begin{align*}
+    \text{minimize} \quad & \langle C,X \rangle \\
+    \text{subject to} \quad &\langle A_i, X \rangle =b_i,
+                              \quad i = 1, \dots, m\\
+                          & X \succeq 0.
+  \end{align*}
+  where $C, A_i \in \mathcal{S}^n$, and $\langle X,Y
+  \rangle := \tr(X^\top Y) = \sum_{ij}X_{ij}Y_{ij}$.
+
+\end{Define}
+
+\subsubsection{Dual SDP Formulation}
+\begin{Define}
+  \normalfont
+  An SDP problem in dual form is written as
+  \begin{align*}
+    \text{maximize} \quad & b^\top y \\
+    \text{subject to} \quad & \sum_{i=1}^m A_iy_i
+                              \preceq C,
+  \end{align*}
+  where $b = (b_i,\dots b_m)$, and $y = (y_1,\dots, y_m)$
+  are the dual decision variables.
+\end{Define}
+
 
 
 \end{document}
