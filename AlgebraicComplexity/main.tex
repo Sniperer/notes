@@ -1,0 +1,89 @@
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,centering,scale=0.8]{geometry}
+\usepackage[affil-it]{authblk}
+
+%------------------ImportEnv---------------
+\input{../share/macro.tex}
+% -----------------ComplexityClass---------
+\input{../share/cc.tex}
+\def\allfiles{}
+\begin{document}
+\title{Notes about Algebraic Complexity}
+\author{Xinhao Nie}
+\affil{Aarhus University}
+\maketitle
+
+\section{\SqrtSum}
+
+\begin{Define}
+  Given positive integers $a_1, \dots a_n$ and an integer $t,$ we want to decide whether $\sum_{i=1}^n\sqrt{a_i} \leq t.$
+\end{Define}
+
+
+\begin{Lemma}
+  We can test whether $\sum_{i=1}^n \sqrt{a_i} = t$ in polynomial
+  time.
+\end{Lemma}
+
+\begin{Proof}
+  The paper 'Decreasing the Nesting Depth of Expressions
+  Involving Square Roots' implicitly implies this result in its
+  section~5.
+
+  First denest any individual radical that denests, which means for
+  all $a_i$ is not perfect sqaure number. Then we choose pair of
+  remaining radicals $\sqrt{a_i}$ and $\sqrt{a_j}$ if their product
+  denests in $\QQ$. If $\sqrt{a_i} \sqrt{a_j}$ denests as
+  $k \in \QQ$, then replace $\sqrt{a_i} + \sqrt{a_j}$ by
+  $$
+  (1 + \frac{k}{a_i})\sqrt{a_i} \in \QQ(\sqrt{a_i}),
+  $$
+  and iterate the process of looking for a pair of radicals that
+  desnests. Its correctness can be easily checked.
+
+  If at some point no product of a pair of radicals denests, then we
+  claim that the entire linear combination could not denest. Next
+  we should prove this claim. The rough idea is that we show
+  $\forall \sqrt{a_i} = \lambda \ee_j$ where $\lambda \in \QQ$ and
+  $\langle \ee_1, \dots,
+  \ee_{2^m} \rangle$ span the vector space $\QQ(\sqrt{a_1}, \dots,
+  \sqrt{a_m})$ over $\QQ$ if $
+  [\QQ(\sqrt{a_1}, \dots, \sqrt{a_n}):\QQ] = 2^m$. Concretely, all
+  basis $\ee$ are the subproducts of $m$ square roots. Then, we can
+  concluded that if $\sum_{i=1}^n \sqrt{a_i} = t$, each square root
+  must be eliminated because they are distinct basis. In other
+  words, if there is no product of a pair of radicals denests, then
+  it cannot equal to a rational number.
+
+  Together with some fact about basis of extension $\QQ$ over $\QQ$,
+  above statement is directly showed by Lemma~1 in the original
+  paper. But it's more general, here we beriefly prove
+  what we use.
+  Suppose that $[\QQ(\sqrt{a_1},\dots,\sqrt{a_m}):\QQ] = 2^m$ and
+  prove by induction if
+  $\sqrt{a_{m+1}} \in \QQ(\sqrt{a_1},\dots,\sqrt{a_m})$ then
+  $\sqrt{a_{m+1}} = \lambda \sqrt{a_1...a_m}$.
+
+  Basis(0): $\lambda = \sqrt{a_1}$.
+  Hypothesis(m-1) and Induction(m): Write $\sqrt{a_{m+1}} =
+  b\sqrt{a_{m}} + c$, where $b, c \in \QQ(\sqrt{a_1},\dots,
+  \sqrt{a_{m-1}})$. By squaring,
+  $$
+  a_{m+1} = b^2a_m + c^2 + 2bc\sqrt{a_m},
+  $$
+  which indicates $c = 0$, since $a_{m+1} \in \QQ$. Then, we have
+  $$
+  \sqrt{a_{m+1}a_m} = ba_{m} \in \QQ(\sqrt{a_1},\dots,\sqrt{a_{m-1}}).
+  $$
+  By hypothesis, $\sqrt{a_{m+1}a_m} = \lambda \sqrt{a_1...a_{m-1}}$,
+  which implies $\sqrt{a_{m+1}} = \lambda a_m^{-1}
+  \sqrt{a_1...a_{m-1}a_{m}}$. Thus, we can write each $\sqrt{a_i}
+  = \lambda \sqrt{a_1...a_m}$. Moreover, the $2^m$ subproducts of
+  $\sqrt{a_1}, \dots, \sqrt{a_m}$ are the basis of $\QQ(\sqrt{a_1},
+  \dots,\sqrt{a_n})$ over $\QQ$. \href{https://math.stackexchange.com/questions/30687/the-square-roots-of-different-primes-are-linearly-independent-over-the-field-of}{The proof is here.}
+
+  
+\end{Proof}
+
+\end{document}
